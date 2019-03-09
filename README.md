@@ -1,1 +1,4 @@
 # Sycro
+
+
+dist>sycro.jar

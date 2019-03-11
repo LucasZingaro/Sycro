@@ -11,11 +11,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JProgressBar;
 
 /**
- *
- * @author Lucas
+ * Classe reaponsável pelo timer e funções.
+ * @author Lucas Zingaro
  */
 public class Sycro {
 

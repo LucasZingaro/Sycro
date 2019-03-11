@@ -10,7 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.filechooser.FileSystemView;
 
 interface srycro {
@@ -18,14 +17,34 @@ interface srycro {
 }
 
 /**
- *
- * @author Lucas
+ * Formulário para operação Sycro.
+ * @author Lucas Zingaro
  */
 public class FrmSycro extends javax.swing.JFrame {
-
+    
+    /**
+     * Objeto da classe Sycro, utilizado para as funcionalidades.
+     */
     Sycro sycro = new Sycro();
-    protected static boolean isSetOrigem, isSetDestino;
+    
+    /**
+     * Boolean para verificação da origem.
+     */
+    protected static boolean isSetOrigem;
+    
+    /**
+     * Boolean para verificação do destino.
+     */
+    protected static boolean isSetDestino;
+    
+    /**
+     * Array de extenções para serem ignoradas na operação.
+     */
     protected static String[] exts = new String[0];
+    
+    /**
+     * Limite do tamanho da pasta Origem.
+     */
     public static double limiteDeTamanhoDaPasta = 1;
 
     /**
@@ -342,7 +361,7 @@ public class FrmSycro extends javax.swing.JFrame {
         System.out.println(cbExts.getItemCount());
         exts = new String[cbExts.getItemCount()];
         for (int i = 0; i < exts.length; i++) {
-            System.out.println("i=" + i);
+            //System.out.println("i=" + i);
             exts[i] = cbExts.getItemAt(i);
         }
 
@@ -452,6 +471,7 @@ public class FrmSycro extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new FrmSycro().setVisible(true);
             }
@@ -462,7 +482,7 @@ public class FrmSycro extends javax.swing.JFrame {
     
     
     /**
-     * Define e inicia o funcionamento da barra de progresso
+     * Define e inicia o funcionamento da barra de progresso.
      * @param intervalo - Intervalo de ação da barra em milisegundos
      */
     public void startProgressBar( int intervalo) {

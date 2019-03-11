@@ -47,7 +47,7 @@ public class Sycro {
                 } catch (IOException | UnsupportedOperationException ex) {
                     Logger.getLogger(Sycro.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println(".run()");
+                //System.out.println(".run()");
             }
         }, delay, this.intervalo);
     } 
@@ -66,6 +66,6 @@ public class Sycro {
     public void stop(){
         timer.cancel();
         timer.purge();
-        System.out.println("Fim");
+        //System.out.println("Fim");
     }
 }

@@ -12,9 +12,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
-interface srycro {
-
-}
 
 /**
  * Formulário para operação Sycro.
@@ -286,7 +283,7 @@ public class FrmSycro extends javax.swing.JFrame {
                             sycro.origem = jfc.getSelectedFile();
                             lblPathOrigem.setText(sycro.origem.getAbsolutePath());
                             isSetOrigem = true;
-                            System.out.println(sycro.origem + ".length()=" + CopyArq.getFolderSize(sycro.origem.getPath()) + " bytes");
+                            //System.out.println(sycro.origem + ".length()=" + CopyArq.getFolderSize(sycro.origem.getPath()) + " bytes");
                         } else {
                             JOptionPane.showMessageDialog(null, "O tamanho da pasta ecede o limite do programa (" + FrmSycro.limiteDeTamanhoDaPasta + " gb)", "Alerta", JOptionPane.ERROR_MESSAGE);
                         }
@@ -358,7 +355,7 @@ public class FrmSycro extends javax.swing.JFrame {
                 ns = "";
             }
         }
-        System.out.println(cbExts.getItemCount());
+        //System.out.println(cbExts.getItemCount());
         exts = new String[cbExts.getItemCount()];
         for (int i = 0; i < exts.length; i++) {
             //System.out.println("i=" + i);
@@ -378,7 +375,7 @@ public class FrmSycro extends javax.swing.JFrame {
                 return;
             }
             int intervalo = Integer.parseInt(contTime.getValue().toString()) * 1000;
-            System.out.println("inter=" + intervalo);
+            //System.out.println("inter=" + intervalo);
             if (intervalo >= 3000) {
                 sycro.setCopiaTimer(exts.clone(), checkOverwrite.isSelected(), intervalo);
                 startProgressBar(intervalo);

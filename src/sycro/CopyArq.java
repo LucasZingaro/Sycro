@@ -83,7 +83,7 @@ public class CopyArq {
             } else {
                 sourceFileChannel.transferTo(0, size, destinationFileChannel);
             }
-            System.out.println("file=" + fileIn.getName());
+            // System.out.println("file=" + fileIn.getName());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro"+e,"Error",JOptionPane.ERROR_MESSAGE);
         } finally {

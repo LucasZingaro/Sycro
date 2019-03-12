@@ -62,8 +62,6 @@ public class FrmSycro extends javax.swing.JFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jMenu1 = new javax.swing.JMenu();
-        lblPathOrigem = new javax.swing.JLabel();
-        lblPathDestino = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         btnOrigem = new javax.swing.JButton();
         btnDestino = new javax.swing.JButton();
@@ -77,8 +75,9 @@ public class FrmSycro extends javax.swing.JFrame {
         radioDir = new javax.swing.JRadioButton();
         radioFile = new javax.swing.JRadioButton();
         checkOverwrite = new javax.swing.JCheckBox();
-        lblExts = new javax.swing.JLabel();
         cbExts = new javax.swing.JComboBox<>();
+        textPathOrigem = new javax.swing.JTextField();
+        textPathDestino = new javax.swing.JTextField();
         menuBar = new javax.swing.JMenuBar();
         menuOptions = new javax.swing.JMenu();
         menuItemTamanho = new javax.swing.JMenuItem();
@@ -88,11 +87,9 @@ public class FrmSycro extends javax.swing.JFrame {
         jMenu1.setText("jMenu1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
-
-        lblPathOrigem.setText("Path");
-
-        lblPathDestino.setText("Path");
+        setTitle("Sycro");
+        setMinimumSize(new java.awt.Dimension(375, 400));
+        setPreferredSize(new java.awt.Dimension(375, 400));
 
         jLabel3.setText("Extensões Ignoradas (Separadas por vírgula)");
 
@@ -143,7 +140,9 @@ public class FrmSycro extends javax.swing.JFrame {
 
         checkOverwrite.setText("Overwrite");
 
-        lblExts.setText("Ignoradas");
+        textPathOrigem.setEditable(false);
+
+        textPathDestino.setEditable(false);
 
         menuOptions.setText("Options");
 
@@ -180,86 +179,77 @@ public class FrmSycro extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textExt)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAtivar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnDesativar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(radioFile)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textExt)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(lblExts))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnOrigem)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(lblPathOrigem))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnDestino)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(lblPathDestino))
-                                    .addComponent(jLabel3)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(contTime, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 73, Short.MAX_VALUE)))
+                        .addComponent(btnOrigem)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnIgnorarExt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cbExts, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(textPathOrigem))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(radioDir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(checkOverwrite)))
+                        .addComponent(btnDestino)
+                        .addGap(4, 4, 4)
+                        .addComponent(textPathDestino))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnIgnorarExt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbExts, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAtivar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnDesativar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(radioDir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(radioFile))
+                            .addComponent(checkOverwrite)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(contTime, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 21, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(radioDir)
+                    .addComponent(radioFile))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOrigem)
-                    .addComponent(lblPathOrigem))
+                    .addComponent(textPathOrigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDestino)
-                    .addComponent(lblPathDestino))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioDir)
-                    .addComponent(checkOverwrite))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radioFile)
+                    .addComponent(textPathDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textExt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnIgnorarExt))
+                .addComponent(textExt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblExts)
+                    .addComponent(btnIgnorarExt)
                     .addComponent(cbExts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
+                .addComponent(checkOverwrite)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(contTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAtivar)
                     .addComponent(btnDesativar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOrigemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrigemActionPerformed
@@ -281,7 +271,7 @@ public class FrmSycro extends javax.swing.JFrame {
                     if (jfc.getSelectedFile().isDirectory()) {
                         if ((CopyArq.getFolderSize(jfc.getSelectedFile().getPath()) / 1000000000) <= limiteDeTamanhoDaPasta) {
                             sycro.origem = jfc.getSelectedFile();
-                            lblPathOrigem.setText(sycro.origem.getAbsolutePath());
+                            textPathOrigem.setText(sycro.origem.getAbsolutePath());
                             isSetOrigem = true;
                             //System.out.println(sycro.origem + ".length()=" + CopyArq.getFolderSize(sycro.origem.getPath()) + " bytes");
                         } else {
@@ -292,7 +282,7 @@ public class FrmSycro extends javax.swing.JFrame {
             } else {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     sycro.origem = jfc.getSelectedFile();
-                    lblPathOrigem.setText(sycro.origem.getAbsolutePath());
+                    textPathOrigem.setText(sycro.origem.getAbsolutePath());
                     isSetOrigem = true;
                 }
             }
@@ -314,7 +304,7 @@ public class FrmSycro extends javax.swing.JFrame {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 if (jfc.getSelectedFile().isDirectory()) {
                     sycro.destino = jfc.getSelectedFile();
-                    lblPathDestino.setText(sycro.destino.getAbsolutePath());
+                    textPathDestino.setText(sycro.destino.getAbsolutePath());
                     isSetDestino = true;
                 }
             }
@@ -519,9 +509,6 @@ public class FrmSycro extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JLabel lblExts;
-    private javax.swing.JLabel lblPathDestino;
-    private javax.swing.JLabel lblPathOrigem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenuItem menuItemTamanho;
@@ -530,5 +517,7 @@ public class FrmSycro extends javax.swing.JFrame {
     private javax.swing.JRadioButton radioDir;
     private javax.swing.JRadioButton radioFile;
     public javax.swing.JTextField textExt;
+    private javax.swing.JTextField textPathDestino;
+    private javax.swing.JTextField textPathOrigem;
     // End of variables declaration//GEN-END:variables
 }

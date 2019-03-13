@@ -12,37 +12,32 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
-
 /**
  * Formulário para operação Sycro.
+ *
  * @author Lucas Zingaro
  */
 public class FrmSycro extends javax.swing.JFrame {
-    
+
     /**
      * Objeto da classe Sycro, utilizado para as funcionalidades.
      */
-    Sycro sycro = new Sycro();
-    
+    Sycro sycro = new Sycro(this);
+
     /**
      * Boolean para verificação da origem.
      */
-    protected static boolean isSetOrigem;
-    
+    protected boolean isSetOrigem;
+
     /**
      * Boolean para verificação do destino.
      */
-    protected static boolean isSetDestino;
-    
+    protected boolean isSetDestino;
+
     /**
      * Array de extenções para serem ignoradas na operação.
      */
     protected static String[] exts = new String[0];
-    
-    /**
-     * Limite do tamanho da pasta Origem.
-     */
-    public static double limiteDeTamanhoDaPasta = 1;
 
     /**
      * Creates new form FrmSycro
@@ -254,7 +249,7 @@ public class FrmSycro extends javax.swing.JFrame {
 
     private void btnOrigemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrigemActionPerformed
         try {
-            
+
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             startProgressBar(3000);
             if (radioDir.isSelected()) {
@@ -266,16 +261,17 @@ public class FrmSycro extends javax.swing.JFrame {
             int returnValue = jfc.showSaveDialog(null);
 
             if (radioDir.isSelected()) {
-                
+
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     if (jfc.getSelectedFile().isDirectory()) {
-                        if ((CopyArq.getFolderSize(jfc.getSelectedFile().getPath()) / 1000000000) <= limiteDeTamanhoDaPasta) {
+                        
+                        if (CopyArq.getFolderSizeInG(jfc.getSelectedFile().getPath()) <= Sycro.limiteDeTamanhoDaPasta) {
                             sycro.origem = jfc.getSelectedFile();
                             textPathOrigem.setText(sycro.origem.getAbsolutePath());
                             isSetOrigem = true;
-                            //System.out.println(sycro.origem + ".length()=" + CopyArq.getFolderSize(sycro.origem.getPath()) + " bytes");
+                            
                         } else {
-                            JOptionPane.showMessageDialog(null, "O tamanho da pasta ecede o limite do programa (" + FrmSycro.limiteDeTamanhoDaPasta + " gb)", "Alerta", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "O tamanho da pasta ecede o limite do programa (" + Sycro.limiteDeTamanhoDaPasta + " gb)", "Alerta", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -345,7 +341,6 @@ public class FrmSycro extends javax.swing.JFrame {
                 ns = "";
             }
         }
-        //System.out.println(cbExts.getItemCount());
         exts = new String[cbExts.getItemCount()];
         for (int i = 0; i < exts.length; i++) {
             //System.out.println("i=" + i);
@@ -365,7 +360,6 @@ public class FrmSycro extends javax.swing.JFrame {
                 return;
             }
             int intervalo = Integer.parseInt(contTime.getValue().toString()) * 1000;
-            //System.out.println("inter=" + intervalo);
             if (intervalo >= 3000) {
                 sycro.setCopiaTimer(exts.clone(), checkOverwrite.isSelected(), intervalo);
                 startProgressBar(intervalo);
@@ -401,8 +395,6 @@ public class FrmSycro extends javax.swing.JFrame {
                 + "destino de seus arquivos.                                        \n"
                 + "É opcional a sobrescrisão de arquvios, denominada Overwrite.     \n"
                 + "Ainda é possível inserir extensões que devem ser ignoradas.    \n\n"
-                + "O prorama não sincroniza arquivos deletados, essa funcionalidade \n"
-                + "poderá ser implementada futuramente.                           \n\n"
                 + "Este é um projeto aberto para fins educativos e seu código esta  \n"
                 + "postado no github. Estou aberto a sujestões.                   \n\n"
                 + "Autor:Lucas Zingaro                                              \n"
@@ -413,12 +405,12 @@ public class FrmSycro extends javax.swing.JFrame {
 
     private void menuItemTamanhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTamanhoActionPerformed
         try {
-            String s = JOptionPane.showInputDialog("Informe o Limite de do tamanho da pasta em GigaBytes (defalt:" + limiteDeTamanhoDaPasta + "gb)", limiteDeTamanhoDaPasta);
-            if (s!=null && s.length()>0) {
+            String s = JOptionPane.showInputDialog("Informe o Limite de do tamanho da pasta em GigaBytes (defalt:" + Sycro.limiteDeTamanhoDaPasta + "gb)", Sycro.limiteDeTamanhoDaPasta);
+            if (s != null && s.length() > 0) {
                 try {
                     double value = Double.parseDouble(s);
                     if (value > 0) {
-                        FrmSycro.limiteDeTamanhoDaPasta = value;
+                        Sycro.limiteDeTamanhoDaPasta = value;
                     }
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "Valor inválido", "Alerta", JOptionPane.ERROR_MESSAGE);
@@ -466,13 +458,14 @@ public class FrmSycro extends javax.swing.JFrame {
     }
 
     Timer proBar = new Timer();
-    
-    
+
     /**
      * Define e inicia o funcionamento da barra de progresso.
+     *
      * @param intervalo - Intervalo de ação da barra em milisegundos
      */
-    public void startProgressBar( int intervalo) {
+    public void startProgressBar(int intervalo) {
+        stopProgressBar();
         proBar = new Timer();
         proBar.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -485,7 +478,6 @@ public class FrmSycro extends javax.swing.JFrame {
         }, 500, intervalo / 10);
     }
 
-    
     /**
      * Para o funcionamento da barra de progresso
      */
@@ -493,6 +485,16 @@ public class FrmSycro extends javax.swing.JFrame {
         proBar.cancel();
         proBar.purge();
         progressBar.setValue(0);
+    }
+    
+    public void frmClear(){
+        textPathDestino.setText("");
+        isSetDestino=false;
+        textPathOrigem.setText("");
+        isSetDestino=false;
+        btnAtivar.setEnabled(true);
+        btnDesativar.setEnabled(false);
+        stopProgressBar();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

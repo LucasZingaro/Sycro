@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 /**
  * Classe responsável cópia dos arquivos
+ *
  * @author Lucas Zingaro
  * @author baseado em diego_qmota Access in 08-03-2019
  * (https://www.guj.com.br/t/swing-copiar-pasta-de-um-local-e-salvar-em-outra/132165/6)
@@ -85,14 +86,13 @@ public class CopyArq {
             }
             // System.out.println("file=" + fileIn.getName());
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Erro"+e,"Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Erro" + e, "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             source.close();
             destination.close();
             sourceFileChannel.close();
             destinationFileChannel.close();
         }
-        
 
     }
 
@@ -104,7 +104,7 @@ public class CopyArq {
      * @param directoryOut - Diretório onde os arquivos serão copiados
      * @param fileOverwrite - Confirmação para sobrescrever os arquivos
      * @throws IOException - Erro de entrada e saida
-     * @throws UnsupportedOperationException - Erro de Operação não suportada 
+     * @throws UnsupportedOperationException - Erro de Operação não suportada
      */
     public void copiarPasta(File directoryIn, File directoryOut, boolean fileOverwrite) throws IOException, UnsupportedOperationException {
         if (!directoryOut.exists()) {
@@ -129,12 +129,12 @@ public class CopyArq {
     }
 
     /**
-     * Retorna o tamanho da pasta desejada
+     * Retorna o tamanho da pasta desejada em Bytes
      *
      * @param path - Path da pasta designada
      * @return Tamanho da pasta em bytes
      */
-    public static int getFolderSize(String path) {
+    public static int getFolderSizeInB(String path) {
         File folder = new File(path);
         int size = 0;
         if (folder.isDirectory()) {
@@ -144,13 +144,82 @@ public class CopyArq {
                     File f = new File(folder, dirList[i]);
                     if (f.isDirectory()) {
                         String filePath = f.getPath();
-                        size += getFolderSize(filePath);
+                        size += getFolderSizeInB(filePath);
                         continue;
                     }
                     size += f.length();
+                    if ((size / 1000000000) > Sycro.limiteDeTamanhoDaPasta) {
+                        return size;
+                    }
                 }
             }
         }
         return size;
+    }
+
+    /**
+     * Retorna o tamanho da pasta desejada em GigaBytes
+     *
+     * @param path - Path da pasta designada
+     * @return Tamanho da pasta em GigaBytes
+     */
+    public static double getFolderSizeInG(String path) {
+        return Double.parseDouble(String.valueOf(getFolderSizeInB(path) / 1000000000));
+    }
+
+    /**
+     * Retorna a quantidade de arquivos/pastas do diretório desejado.
+     *
+     * @param path - Path da pasta designada
+     * @return Quantidade de arquivos
+     */
+    public static int contPaths(String path) {
+        File folder = new File(path);
+        int size = 0;
+        if (folder.isDirectory()) {
+            String[] dirList = folder.list();
+            if (dirList != null) {
+                for (int i = 0; i < dirList.length; i++) {
+                    File f = new File(folder, dirList[i]);
+                    if (f.isDirectory()) {
+                        String filePath = f.getPath();
+                        size += contPaths(filePath) + 1;
+                        continue;
+                    }
+                    size++;
+                }
+            }
+        }
+        return size;
+    }
+    
+    /**
+     * Pegar todos os Paths de um diretório
+     * @param dir - Diretório designado
+     * @return - Array dos Paths
+     */
+    public static File[] getPathsInDir(File dir) {
+        File[] files = dir.listFiles();
+        File[] filesFim = new File[CopyArq.contPaths(dir.getPath())];
+        for (int j = 0; j < filesFim.length;j++) {
+            
+            for (int i = 0;i<files.length;i++) {
+                if (files[i].isDirectory()) {
+                    File[] newfiles=getPathsInDir(new File(dir + "\\" + files[i].getName()));
+                    filesFim[j]=new File(dir + "\\" + files[i].getName());
+                    j++;
+                    for (int k = 0;k<newfiles.length;k++) {
+                        filesFim[j] = newfiles[k];
+                        j++;
+                    }
+                    
+                } else {
+                    filesFim[j] = (new File(dir + "\\" + files[i].getName()));
+                    j++;
+                }
+            }
+        }
+
+        return filesFim;
     }
 }

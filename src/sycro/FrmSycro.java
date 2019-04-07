@@ -35,9 +35,9 @@ public class FrmSycro extends javax.swing.JFrame {
     protected boolean isSetDestino;
 
     /**
-     * Array de extenções para serem ignoradas na operação.
+     * Array de extensões, arquivos e pastas para serem ignoradas na operação.
      */
-    protected static String[] exts = new String[0];
+    private static String[] listaIgn = new String[0];
 
     /**
      * Creates new form FrmSycro
@@ -86,7 +86,7 @@ public class FrmSycro extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(375, 400));
         setPreferredSize(new java.awt.Dimension(375, 400));
 
-        jLabel3.setText("Extensões Ignoradas (Separadas por vírgula)");
+        jLabel3.setText("Extensões, Arquivos e Pastas Ignoradas (Separadas por vírgula)");
 
         btnOrigem.setText("Origem");
         btnOrigem.addActionListener(new java.awt.event.ActionListener() {
@@ -132,6 +132,7 @@ public class FrmSycro extends javax.swing.JFrame {
 
         buttonGroup1.add(radioFile);
         radioFile.setText("Arquivo único");
+        radioFile.setEnabled(false);
 
         checkOverwrite.setText("Overwrite");
 
@@ -203,7 +204,7 @@ public class FrmSycro extends javax.swing.JFrame {
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(contTime, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 21, Short.MAX_VALUE)))
+                        .addGap(0, 17, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -341,10 +342,9 @@ public class FrmSycro extends javax.swing.JFrame {
                 ns = "";
             }
         }
-        exts = new String[cbExts.getItemCount()];
-        for (int i = 0; i < exts.length; i++) {
-            //System.out.println("i=" + i);
-            exts[i] = cbExts.getItemAt(i);
+        listaIgn = new String[cbExts.getItemCount()];
+        for (int i = 0; i < listaIgn.length; i++) {
+            listaIgn[i] = cbExts.getItemAt(i);
         }
 
     }//GEN-LAST:event_btnIgnorarExtActionPerformed
@@ -361,7 +361,7 @@ public class FrmSycro extends javax.swing.JFrame {
             }
             int intervalo = Integer.parseInt(contTime.getValue().toString()) * 1000;
             if (intervalo >= 3000) {
-                sycro.setCopiaTimer(exts.clone(), checkOverwrite.isSelected(), intervalo);
+                sycro.setCopiaTimer(listaIgn.clone(), checkOverwrite.isSelected(), intervalo);
                 startProgressBar(intervalo);
                 btnAtivar.setEnabled(false);
                 btnDesativar.setEnabled(true);
@@ -388,16 +388,23 @@ public class FrmSycro extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         JOptionPane.showMessageDialog(
                 null,//parente 
-                "Este é um programa java simples para sincronizar o(s) arquivo(s) \n"
-                + "entre dois diretórios diferentes. Considerando também extensões  \n"
-                + "que desejam se ignoradas, assim fornecida pelo usuário.        \n\n"
-                + "Para utilizar suas funções é necessário ecolher a origem e o     \n"
-                + "destino de seus arquivos.                                        \n"
-                + "É opcional a sobrescrisão de arquvios, denominada Overwrite.     \n"
-                + "Ainda é possível inserir extensões que devem ser ignoradas.    \n\n"
-                + "Este é um projeto aberto para fins educativos e seu código esta  \n"
-                + "postado no github. Estou aberto a sujestões.                   \n\n"
-                + "Autor:Lucas Zingaro                                              \n"
+                  "Este é um programa java simples para sincronizar o(s) arquivo(s)\n"
+                + "entre dois diretórios diferentes. Considerando também extensões,\n"
+                + "arquivos e ou pastas que desejam ser ignoradas pelo usuário.    \n\n"
+                + "Para utilizar suas funções é necessário ecolher a origem e o    \n"
+                + "destino de seus arquivos.                                       \n\n"
+                + "É opcional a sobrescrição de arquivos, denominada Overwrite,    \n"
+                + "porém necessário para atualização do conteudo dos arquivos.     \n\n"
+                + "Exemplos de: \n"
+                + "     Extensões que devem ser ignoradas: .txt,.php,.html         \n"
+                + "     Arquivos que devem ser ignorados:  nome.txt,nome2.txt      \n"
+                + "     Pastas que devem ser ignoradas:   nomeDaPasta,nome pasta   \n"
+                + "     Todos Juntos: .txt,nome.php,nomeDaPasta,nome pasta,.html   \n\n"
+                + "Por precaução, existe uma configuração de limite do tamanho do  \n"
+                + "diretório origem.                                               \n\n\n"
+                + "Este é um projeto aberto para fins educativos e seu código esta \n"
+                + "postado no github. Estou aberto a sujestões.                    \n\n"
+                + "Autor: Lucas Zingaro                                            \n"
                 + "Github: www.github.com/LucasZingaro",//texto
                 "Informações",//titulo
                 JOptionPane.INFORMATION_MESSAGE);//tipo

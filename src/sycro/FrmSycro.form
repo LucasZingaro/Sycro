@@ -121,7 +121,7 @@
                               <Component id="contTime" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="0" pref="21" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="17" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -176,7 +176,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Extens&#xf5;es Ignoradas (Separadas por v&#xed;rgula)"/>
+        <Property name="text" type="java.lang.String" value="Extens&#xf5;es, Arquivos e Pastas Ignoradas (Separadas por v&#xed;rgula)"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnOrigem">
@@ -252,6 +252,7 @@
           <ComponentRef name="buttonGroup1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Arquivo &#xfa;nico"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="checkOverwrite">

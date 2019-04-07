@@ -26,7 +26,7 @@ public class Sycro {
     private final int DELAY = 0;
     private int intervalo = 5000;
     private CopyArq cpa;
-    
+
     /**
      * Guarda os Paths do último ciclo do Sycro.
      */
@@ -40,12 +40,12 @@ public class Sycro {
      * Limite do tamanho da pasta Origem.
      */
     public static double limiteDeTamanhoDaPasta = 0.1;
-    
+
     /**
      * Objeto do Formulário para manipulação da barra de progresso
      */
     private FrmSycro frmSycro;
-    
+
     public Sycro(FrmSycro frm) {
         frmSycro = frm;
     }
@@ -76,7 +76,6 @@ public class Sycro {
                 } catch (IOException | UnsupportedOperationException ex) {
                     Logger.getLogger(Sycro.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                //System.out.println(".run()");
                 Sycro.contSycro++;
             }
         }, DELAY, this.intervalo);
@@ -87,7 +86,7 @@ public class Sycro {
      */
     public void restart() {
         stop();
-        setCopiaTimer(cpa.getListExt(), fileOverwrite, intervalo);
+        setCopiaTimer(cpa.getListIgnore(), fileOverwrite, intervalo);
 
     }
 
@@ -97,13 +96,12 @@ public class Sycro {
     public void stop() {
         timer.cancel();
         timer.purge();
-        contSycro=0;
+        contSycro = 0;
         frmSycro.stopProgressBar();
-        //System.out.println("Fim");
     }
 
     /**
-     * Verifica e sincroniza os arquivos deletados
+     * Verifica e sincroniza os arquivos deletados.
      */
     public void sycroDeleted() {
         if (!destino.isDirectory()) {
@@ -116,22 +114,33 @@ public class Sycro {
         if (origem.exists()) {
             if (Sycro.contSycro > 0) {
                 for (File lastFile : Sycro.lastSycro) {
-                    if (!lastFile.exists()) {
-                        for (File fileDestino : CopyArq.getPathsInDir(destino)) {
-                            String sOrigem = lastFile.getPath().replace(origem.getPath(), "");
-                            String sDestino = fileDestino.getPath().replace(destino.getPath(), "");
-                            System.out.println(sOrigem + "==" + sDestino + "? R:" + sOrigem.compareTo(sDestino));
-                            if (sOrigem.compareTo(sDestino) == 0) {
-                                if (fileDestino.isDirectory()) {
-                                    for(File f : fileDestino.listFiles()){
-                                        f.delete();
+                    boolean continuar = true;
+                    for (String objIg : cpa.getListIgnore()) {
+                        if (lastFile.isDirectory() && CopyArq.isEqualsPastaInPath(lastFile.getPath(), objIg, destino.getPath())) {
+                            continuar = false;
+                            break;
+                        } else if (CopyArq.isEqualsPastaInPath(lastFile.getParent(), objIg, destino.getPath()) || CopyArq.isEqualsExt(lastFile.getPath(), objIg)) {
+                            continuar = false;
+                            break;
+                        }
+                    }
+                    if (continuar) {
+                        if (!lastFile.exists()) {
+                            for (File fileDestino : CopyArq.getPathsInDir(destino)) {
+                                String sOrigem = lastFile.getPath().replace(origem.getPath(), "");
+                                String sDestino = fileDestino.getPath().replace(destino.getPath(), "");
+                                if (sOrigem.compareTo(sDestino) == 0) {
+                                    if (fileDestino.isDirectory()) {
+                                        for (File f : fileDestino.listFiles()) {
+                                            f.delete();
+                                        }
+                                        fileDestino.delete();
+                                        setLastSycro();
+                                        sycroDeleted();
+                                        return;
+                                    } else {
+                                        fileDestino.delete();
                                     }
-                                    fileDestino.delete();
-                                    setLastSycro();
-                                    sycroDeleted();
-                                    return;
-                                } else {
-                                    fileDestino.delete();
                                 }
                             }
                         }
@@ -139,7 +148,6 @@ public class Sycro {
                 }
             }
             setLastSycro();
-
         } else {
             new File(destino + "\\" + origem.getName()).delete();
             stop();

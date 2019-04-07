@@ -25,40 +25,40 @@ public class CopyArq {
     }
 
     /**
-     * Define a lista de extensões ignoradas
+     * Define a lista de extensões, arquivos e pastas ignoradas
      *
-     * @param listExt - Lista de extensões ignoradas
+     * @param listIgnore - Lista de extensões, arquivos e pastas ignoradas
      */
-    public CopyArq(String[] listExt) {
-        this.listExt = listExt.clone();
+    public CopyArq(String[] listIgnore) {
+        this.listIgnore = listIgnore.clone();
     }
 
     /**
-     * Lista de extensões ignoradas.
+     * Lista de extensões, arquivos e pastas ignoradas.
      */
-    private String listExt[];
+    private String[] listIgnore;
 
     /**
-     * Pegar lista de extensões ignoradas.
+     * Pegar lista de extensões, arquivos e pastas ignoradas.
      *
-     * @return Array com lista de extenções ignoradas
+     * @return Array com lista de extensões, arquivos e pastas ignoradas.
      */
-    public String[] getListExt() {
-        return listExt.clone();
+    public String[] getListIgnore() {
+        return listIgnore.clone();
     }
 
     /**
-     * Atribuir lista de extensões ignoradas.
+     * Atribuir lista de extensões, arquivos e pastas ignoradas.
      *
-     * @param listExt - Array de extensões ignoradas
+     * @param listIgnore - Array de extensões, arquivos e pastas ignoradas
      */
-    public void setListExt(String[] listExt) {
-        this.listExt = listExt.clone();
+    public void setListIgnore(String[] listIgnore) {
+        this.listIgnore = listIgnore.clone();
     }
 
     /**
      * Faz a cópia de um único arquivo de uma origem para um destino. (Desde que
-     * não tenha uma extensão da lista de extensões ignoradas)
+     * não tenha uma extensão da lista de extensões, arquivos e pastas ignoradas)
      *
      * @param fileIn - Arquivo de origem
      * @param fileOut - Arquivo de destino
@@ -66,39 +66,60 @@ public class CopyArq {
      * @throws java.io.IOException - Erro de Entrada e Saida
      */
     public void copiarArquivo(File fileIn, File fileOut, boolean fileOverwrite) throws IOException {
-        if (fileOut.exists() && !fileOverwrite) {
+        for (String objIg : listIgnore) {
+            if (isEqualsPasta(fileIn.getParent(), objIg)) {
+                return;
+            }
+            if (isEqualsExt(fileIn.getPath(), objIg)) {
+                return;
+            }
+        }
+
+        if (fileOut.exists()
+                && !fileOverwrite) {
             return;
         }
-        FileInputStream source = new FileInputStream(fileIn);
-        FileOutputStream destination = new FileOutputStream(fileOut);
-        FileChannel sourceFileChannel = source.getChannel();
-        FileChannel destinationFileChannel = destination.getChannel();
+        FileInputStream source = null;
+        FileOutputStream destination = null;
+        FileChannel sourceFileChannel = null;
+        FileChannel destinationFileChannel = null;
+
         try {
-            long size = sourceFileChannel.size();
-            if (listExt.length >= 1) {
-                for (String ext : listExt) {
-                    if (!fileIn.getName().endsWith(ext)) {
-                        sourceFileChannel.transferTo(0, size, destinationFileChannel);
-                    }
-                }
+            source = new FileInputStream(fileIn);
+            if (listIgnore.length >= 1) {
+                destination = new FileOutputStream(fileOut);
+                sourceFileChannel = source.getChannel();
+                destinationFileChannel = destination.getChannel();
+                sourceFileChannel.transferTo(0, sourceFileChannel.size(), destinationFileChannel);
+
             } else {
-                sourceFileChannel.transferTo(0, size, destinationFileChannel);
+                destination = new FileOutputStream(fileOut);
+                sourceFileChannel = source.getChannel();
+                destinationFileChannel = destination.getChannel();
+                sourceFileChannel.transferTo(0, sourceFileChannel.size(), destinationFileChannel);
             }
-            // System.out.println("file=" + fileIn.getName());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro" + e, "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
-            source.close();
-            destination.close();
-            sourceFileChannel.close();
-            destinationFileChannel.close();
+            if (source != null) {
+                source.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+            if (sourceFileChannel != null) {
+                sourceFileChannel.close();
+            }
+            if (destinationFileChannel != null) {
+                destinationFileChannel.close();
+            }
         }
 
     }
 
     /**
      * Faz a cópia de uma pasta de uma origem para um destino. (Desde que não
-     * tenha uma extensão da lista de extensões ignoradas)
+     * tenha uma extensão da lista de extensões, arquivos e pastas ignoradas)
      *
      * @param directoryIn - Diretório onde estão os arquivos a serem copiados
      * @param directoryOut - Diretório onde os arquivos serão copiados
@@ -116,6 +137,12 @@ public class CopyArq {
         if (!directoryIn.isDirectory()) {
             copiarArquivo(directoryIn, directoryOut, fileOverwrite);
         } else {
+            for (String pastaIg : listIgnore) {
+                if (isEqualsPasta(directoryIn.getName(), pastaIg)) {
+                    directoryOut.delete();
+                    return;
+                }
+            }
             //caso de pastas
             File[] files = directoryIn.listFiles();
             for (int i = 0; i < files.length; ++i) {
@@ -177,6 +204,7 @@ public class CopyArq {
         File folder = new File(path);
         int size = 0;
         if (folder.isDirectory()) {
+
             String[] dirList = folder.list();
             if (dirList != null) {
                 for (int i = 0; i < dirList.length; i++) {
@@ -192,27 +220,28 @@ public class CopyArq {
         }
         return size;
     }
-    
+
     /**
      * Pegar todos os Paths de um diretório
+     *
      * @param dir - Diretório designado
      * @return - Array dos Paths
      */
     public static File[] getPathsInDir(File dir) {
         File[] files = dir.listFiles();
         File[] filesFim = new File[CopyArq.contPaths(dir.getPath())];
-        for (int j = 0; j < filesFim.length;j++) {
-            
-            for (int i = 0;i<files.length;i++) {
+        for (int j = 0; j < filesFim.length; j++) {
+
+            for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
-                    File[] newfiles=getPathsInDir(new File(dir + "\\" + files[i].getName()));
-                    filesFim[j]=new File(dir + "\\" + files[i].getName());
+                    File[] newfiles = getPathsInDir(new File(dir + "\\" + files[i].getName()));
+                    filesFim[j] = new File(dir + "\\" + files[i].getName());
                     j++;
-                    for (int k = 0;k<newfiles.length;k++) {
+                    for (int k = 0; k < newfiles.length; k++) {
                         filesFim[j] = newfiles[k];
                         j++;
                     }
-                    
+
                 } else {
                     filesFim[j] = (new File(dir + "\\" + files[i].getName()));
                     j++;
@@ -221,5 +250,72 @@ public class CopyArq {
         }
 
         return filesFim;
+    }
+
+    /**
+     * Verifica se o path termina com a extensão
+     *
+     * @param path - String do path do arquivo.
+     * @param ext - extensão avaliada.
+     * @return - True se for a terminação
+     */
+    public static boolean isEqualsExt(String path, String ext) {
+        try {
+            if (ext.isEmpty() || path.isEmpty()) {
+                return false;
+            }
+            if (!ext.contains(".")) {
+                return false;
+            }
+
+            int index = path.length() - ext.length();
+            return (path.substring(index).equalsIgnoreCase(ext));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Verifica se path termina com o nome de pasta desejado
+     *
+     * @param path - String do path do arquivo.
+     * @param nomePasta - Nome da pasta.
+     * @return - True se for a terminação e False se não
+     */
+    public static boolean isEqualsPasta(String path, String nomePasta) {
+        try {
+            if (nomePasta.isEmpty() || path.isEmpty()) {
+                return false;
+            }
+            if (nomePasta.contains(".")) {
+                return false;
+            }
+            return path.endsWith(nomePasta);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Verifica se path contém com o nome de pasta desejado
+     *
+     * @param path - String do path do arquivo.
+     * @param nomePasta - Nome da pasta.
+     * @param pathRaiz
+     * @return True ou False
+     */
+    public static boolean isEqualsPastaInPath(String path, String nomePasta, String pathRaiz) {
+        try {
+            String sp = path.replace(pathRaiz, "");
+            if (nomePasta.isEmpty() || path.isEmpty()) {
+                return false;
+            }
+            if (nomePasta.contains(".")) {
+                return false;
+            }
+            return sp.contains("\\"+nomePasta);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -265,12 +265,12 @@ public class FrmSycro extends javax.swing.JFrame {
 
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     if (jfc.getSelectedFile().isDirectory()) {
-                        
+
                         if (CopyArq.getFolderSizeInG(jfc.getSelectedFile().getPath()) <= Sycro.limiteDeTamanhoDaPasta) {
                             sycro.origem = jfc.getSelectedFile();
                             textPathOrigem.setText(sycro.origem.getAbsolutePath());
                             isSetOrigem = true;
-                            
+
                         } else {
                             JOptionPane.showMessageDialog(null, "O tamanho da pasta ecede o limite do programa (" + Sycro.limiteDeTamanhoDaPasta + " gb)", "Alerta", JOptionPane.ERROR_MESSAGE);
                         }
@@ -317,27 +317,24 @@ public class FrmSycro extends javax.swing.JFrame {
         String s = textExt.getText();
         String ns = "";
         if (!s.isEmpty()) {
-            if (s.contains(", ")) {
+            while (s.contains(", ")) {
                 s = s.replace(", ", ",");
             }
-            if (s.contains(" ")) {
-                for (int i = 0; i < s.length(); i++) {
-                    if (!(s.charAt(i) == ' ')) {
-                        ns += s.charAt(i);
-                    }
-                }
-                s = ns;
+            while (s.contains(" ,")) {
+                s = s.replace(" ,", ",");
+            }
+            while (s.contains(" .")) {
+                s = s.replace(" .", ".");
             }
         }
-        ns = "";
         for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == ',') {
+            if (s.charAt(i) == ',' && (!ns.isEmpty() || !ns.equals(""))) {
                 cbExts.addItem(ns);
                 ns = "";
             } else {
                 ns += s.charAt(i);
             }
-            if (i == s.length() - 1) {
+            if (i == s.length() - 1 && (!ns.isEmpty() || !ns.equals(""))) {
                 cbExts.addItem(ns);
                 ns = "";
             }
@@ -388,7 +385,7 @@ public class FrmSycro extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         JOptionPane.showMessageDialog(
                 null,//parente 
-                  "Este é um programa java simples para sincronizar o(s) arquivo(s)\n"
+                "Este é um programa java simples para sincronizar o(s) arquivo(s)\n"
                 + "entre dois diretórios diferentes. Considerando também extensões,\n"
                 + "arquivos e ou pastas que desejam ser ignoradas pelo usuário.    \n\n"
                 + "Para utilizar suas funções é necessário ecolher a origem e o    \n"
@@ -493,12 +490,12 @@ public class FrmSycro extends javax.swing.JFrame {
         proBar.purge();
         progressBar.setValue(0);
     }
-    
-    public void frmClear(){
+
+    public void frmClear() {
         textPathDestino.setText("");
-        isSetDestino=false;
+        isSetDestino = false;
         textPathOrigem.setText("");
-        isSetDestino=false;
+        isSetDestino = false;
         btnAtivar.setEnabled(true);
         btnDesativar.setEnabled(false);
         stopProgressBar();
